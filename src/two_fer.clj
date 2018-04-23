@@ -1,17 +1,16 @@
 (ns two-fer
   (:require [clojure.spec.alpha :as s]))
 
-(defn two-fer ([] "One for you, one for me.")
+(defn two-fer
+  ([] "One for you, one for me.")
   ([name] (clojure.string/join ["One for " name ", one for me." ])))
 
 (s/fdef two-fer/two-fer
-          :args (s/alt
-                  :unary (s/cat :string-name string?)
-                  :nullary (s/cat))
-
-          :ret string?
-          :fn (fn [x]
-                (if (contains? (-> x :args (get 1)) :string-name)
-                  (str "One for " (-> x :args (get 1) :string-name) ", one for me")
-                  (str  (:ret x) "One for you, one for me."))))
-         ;; #(= (:ret %) (if (contains? (:args %) :nullary) "One for you, one for me." (clojure.string/join ["One for " (-> % :args :unary :string-name) ", one for me."]))))
+        :args (s/and (s/alt :string string? :nil nil?)
+                     #(or (string? (:string %)) (empty? (:nil %))))
+        :ret string?
+        :fn (fn [x]
+              (= (:ret x)
+                 (if (= (-> x :args :key) :nil)
+                   ("One for you, one for me.")
+                   (clojure.string/join ["One for " (-> x :args second) ", one for me."])))))
