@@ -14,4 +14,4 @@
 (deftest test-int-arg-for-two-fer
   "Testing spec generated invalid arguments for two-fer"
   (stest/instrument `two-fer)
-  (is (instance? Exception (two-fer/two-fer (gen/generate (s/gen int?))))))
+  (is (= true (instance? Exception (two-fer/two-fer (gen/generate (s/gen int?)))))))
