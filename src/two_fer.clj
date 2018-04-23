@@ -6,7 +6,7 @@
 
 (s/fdef two-fer/two-fer
           :args (s/alt
-                  :unary (s/cat :string-name (s/and string? #(not (int? %))))
+                  :unary (s/cat :string-name string?)
                   :nullary (s/cat))
 
           :ret string?
